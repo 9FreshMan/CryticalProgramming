@@ -15,6 +15,8 @@ namespace Calc.App
             Console.WriteLine(RomanNumber.Parse("X"));
             //edit second
             Console.WriteLine(RomanNumber.Parse("XX"));
+            //edit third
+            Console.WriteLine(RomanNumber.Parse("V"));
         }
     }
 }
