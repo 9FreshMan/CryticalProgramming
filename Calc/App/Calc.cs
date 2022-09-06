@@ -10,6 +10,7 @@ namespace Calc.App
     {
         public void Run() {
             Console.WriteLine("Hello, world");
+            Console.WriteLine(RomanNumber.Parse("XXX"));
         }
     }
 }
