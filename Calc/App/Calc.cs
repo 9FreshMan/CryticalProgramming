@@ -11,6 +11,8 @@ namespace Calc.App
         public void Run() {
             Console.WriteLine("Hello, world");
             Console.WriteLine(RomanNumber.Parse("XXX"));
+            //edit one 
+            Console.WriteLine(RomanNumber.Parse("X"));
         }
     }
 }
