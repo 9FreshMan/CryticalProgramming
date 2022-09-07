@@ -15,7 +15,8 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void RomanNumberParse() {
+        public void RomanNumberParse()
+        {
 
             Assert.AreEqual(RomanNumber.Parse("I"), 1);
             Assert.AreEqual(RomanNumber.Parse("IV"), 4);
@@ -28,6 +29,13 @@ namespace TestProject
             Assert.AreEqual(RomanNumber.Parse("LV"), 55);
             Assert.AreEqual(RomanNumber.Parse("XL"), 40);
 
+        }
+        [TestMethod]
+        public void RomanNumberParseNdigits()
+        {
+            var exc = Assert.ThrowsException<ArgumentException>(() => { RomanNumber.Parse("NNN"); });//Daniel Change
+            var exp = new ArgumentException("Invalid number, only one 'N'");
+            Assert.AreEqual(exc.ParamName, exp.ParamName);
         }
     }
 }
