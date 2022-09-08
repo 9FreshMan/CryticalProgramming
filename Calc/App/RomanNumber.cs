@@ -25,7 +25,10 @@ namespace Calc.App
             //If next number is bigger than current, it's currentnumber-result, else need to add this one
             // IX : -1 + 10;  XC : -10 + 100;  XX : +10+10; CX : +100+10
             //
-            
+            if (str.Contains('N') && str.Length - 1 != 0)//Проверка на наличие более одного 'N'
+            {
+                throw new ArgumentException("Invalid number, only one 'N'");
+            }
             int result = 0;
             result += RomeNumbers[str[str.Length - 1]];
             for (int i = str.Length - 2; i >= 0;i--) {
@@ -38,7 +41,7 @@ namespace Calc.App
                 { 
                 result-=RomeNumbers[str[i]];
                 }
-            
+
             }
             return result;
         }
@@ -74,10 +77,11 @@ namespace Calc.App
                 {
                     result += RomeNumbers[temp[i].ToString()];
                     temp[i] = '0';
-                    num = 
+                    num =
                 }
                 if (rome)
-                
+
+
             }
             
             return result;

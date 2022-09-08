@@ -33,7 +33,7 @@ namespace TestProject
         [TestMethod]
         public void RomanNumberParseNdigits()
         {
-            var exc = Assert.ThrowsException<ArgumentException>(() => { RomanNumber.Parse("NNN"); });//Daniel Change
+            var exc = Assert.ThrowsException<ArgumentException>(() => { RomanNumber.Parse("XNX"); });//Daniel Change
             var exp = new ArgumentException("Invalid number, only one 'N'");
             Assert.AreEqual(exc.ParamName, exp.ParamName);
         }
