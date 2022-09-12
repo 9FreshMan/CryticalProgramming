@@ -29,6 +29,15 @@ namespace TestProject
             Assert.AreEqual(RomanNumber.Parse("XL"), 40);
 
         }
+        [TestMethod]
+        public void RomanNumberParse1()
+        {
+
+            var exc = Assert.ThrowsException<ArgumentException>(() => { RomanNumber.Parse("XXA"); });
+            var exp = new ArgumentException("Invalid char A");
+            Assert.AreEqual(exp.Message, exc.Message);
+
+        }
     }
 }
 

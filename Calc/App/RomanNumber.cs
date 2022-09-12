@@ -68,7 +68,7 @@ namespace Calc.App
             //4154 = 4000+100+50+4
             //4000 = 1000+1000+1000+1000
             
-            string temp = num.ToString();
+          /*  string temp = num.ToString();
             for (int i = temp.Length - 1; i >=0 ; i--) {
                 if (i == temp.Length - 1)
                 {
@@ -78,7 +78,7 @@ namespace Calc.App
                 }
                 if (rome)
                 
-            }
+            }*/
             
             return result;
         }
