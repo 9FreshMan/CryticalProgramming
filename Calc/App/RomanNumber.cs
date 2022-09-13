@@ -3,105 +3,324 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+
 namespace Calc.App
 {
-    //Class which works with roman numbers 
     public class RomanNumber
     {
-        // Receiving the number from string record
+        private int _value;
+
+        public int Value
+        {
+            get { return _value; }
+            set { _value = value; }
+        }
+
+
+        //Получение числа из строки
+        public RomanNumber()
+        {
+            this._value = 0;
+        }
+
+        public RomanNumber(int val)
+        {
+            this._value = val;
+        }
+
+        public override string ToString()
+        {
+            if (this._value == 0)
+            {
+                return "N";
+            }
+
+            int n = this._value < 0 ? -this._value : this._value;
+            String res = this._value < 0 ? "-" : "";
+            String[] parts = { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
+            int[] values = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
+
+
+            for (int j = 0; j <= parts.Length - 1; j++)
+            {
+                while (n >= values[j])
+                {
+                    n -= values[j];
+                    res += parts[j];
+
+                }
+            }
+            return res;
+        }
+
         public static int Parse(String str)
         {
-            var RomeNumbers = new Dictionary<char, int>()
-                {
-                {'I', 1},
-                {'V', 5},
-                {'X', 10},
-                {'L', 50},
-                {'C', 100},
-                {'D', 500},
-                {'M', 1000},
-                };
-            //If next number is bigger than current, it's currentnumber-result, else need to add this one
-            // IX : -1 + 10;  XC : -10 + 100;  XX : +10+10; CX : +100+10
-            //
-            if (str.Contains('N') && str.Length - 1 != 0)//Проверка на наличие более одного 'N'
+
+
+            char[] digits = { 'N', 'I', 'V', 'X', 'L', 'C', 'D', 'M' };
+
+            int[] digitValues = { 0, 1, 5, 10, 50, 100, 500, 1000 };
+
+            if (str == "N") { return 0; }
+
+            if (str == null)
             {
-                throw new ArgumentException("Invalid number, only one 'N'");
+                throw new ArgumentNullException();
             }
-            int result = 0;
-            result += RomeNumbers[str[str.Length - 1]];
-            for (int i = str.Length - 2; i >= 0;i--) {
-                if (RomeNumbers[str[i]] >= RomeNumbers[str[i+1]])
-                {
-                    result += RomeNumbers[str[i]];
-
-                }
-                else if (RomeNumbers[str[i]] < RomeNumbers[str[i+1]])
-                { 
-                result-=RomeNumbers[str[i]];
-                }
-
-            }
-            return result;
-        }
-        public static string ReverseParse(int num) {
-            var RomeNumbers = new Dictionary<string, int>()
-                {
-                {"I", 1},
-                {"II", 2},
-                {"III", 3},
-                {"IV", 4},
-                {"V", 5},
-                {"VI", 6},
-                {"VII", 7},
-                {"IIX", 8},
-                {"IX", 9},
-                {"X", 10},
-                {"XL", 40},
-                {"L", 50},
-                {"XC", 90},
-                {"C", 100},
-                {"CD", 400},
-                {"D", 500},
-                {"DM", 900},
-                {"M", 1000},
-                };
-            string result = "";
-            //4154 = 4000+100+50+4
-            //4000 = 1000+1000+1000+1000
-            
-          /*  string temp = num.ToString();
-            for (int i = temp.Length - 1; i >=0 ; i--) {
-                if (i == temp.Length - 1)
-                {
-                    result += RomeNumbers[temp[i].ToString()];
-                    temp[i] = '0';
-                    num =
-                }
-                if (rome)
-
-
-            }
-            
-            return result;
-        }
-
-        public static string CalculateRomeNumbers(String str1, String str2, char act) {
-            int result = 0;
-            switch (act)
+            if (str.Length == 0)
             {
-                case '+': result = Parse(str1)+Parse(str2); break;
-                case '-': result = Parse(str1)-Parse(str2); break;
-                case '*': result = Parse(str1)*Parse(str2); break;
-                case '/': result = Parse(str1)/Parse(str2); break;
-                
-                default:
-                    return "-1";
+                throw new ArgumentException("Empty string not allowed");
             }
-            
 
-            return ReverseParse(result);
+            int len = str.Length;
+
+            int pos = str.Length - 1;//положение последней цифры
+
+
+
+            int res = 0;
+            int temp = 0;
+            int flag = 0;
+
+            if (str.StartsWith("-"))
+            {
+                flag = 1;
+            }
+
+            for (int i = flag; i < str.Length; i++)
+            {
+
+                char digit = str[pos]; //символ цифры
+                int ind = Array.IndexOf(digits, digit);
+
+
+
+                if (ind == -1)
+                {
+                    throw new ArgumentException($"Invalid char {digit}");
+                }
+
+                int val = digitValues[ind];
+                int number1 = val;
+
+
+
+                if (len > 1)
+                {
+                    if (temp > val)
+                    {
+                        res -= val;
+                    }
+                    else
+                    {
+                        res += val;
+                    }
+                    temp = val;
+                }
+                else
+                {
+                    res = val;
+                }
+                pos -= 1;
+            }
+
+            if (str.StartsWith('-'))
+            {
+                res *= -1;
+            }
+            return res;
+
         }
+        public static RomanNumber Add(object obj1, object obj2)
+        {
+            var rns = new RomanNumber[] { null!, null! };
+            var pars = new object[] { obj1, obj2 };
+
+
+
+            for (int i = 0; i < 2; i++)
+            {
+                if (pars[i] is null) throw new ArgumentNullException($"obj{i + 1}");
+
+
+
+                if (pars[i] is int val) rns[i] = new RomanNumber(val);
+                else if (pars[i] is String str) rns[i] = new RomanNumber(Parse(str));
+                else if (pars[i] is RomanNumber rn) rns[i] = rn;
+                else throw new ArgumentException($"obj{i + 1}: type unsupported");
+            }
+
+
+
+            return rns[0].Add(rns[1]);
+
+        }
+        //public static RomanNumber Add(int rn1, int rn2)
+        //{
+        //    //if (rn is null)
+        //    //{
+        //    //    throw new ArgumentNullException();
+        //    //}
+
+        //    RomanNumber rn = new();
+        //    rn.Value = rn1 + rn2;
+        //    return rn;
+        //}
+
+        //public static RomanNumber Add(RomanNumber rn1, RomanNumber rn2)
+        //{
+        //    //if (rn is null)
+        //    //{
+        //    //    throw new ArgumentNullException();
+        //    //}
+
+        //    RomanNumber rn = new();
+        //    rn.Value = rn1.Value + rn2.Value;
+        //    return rn;
+        //}
+
+        //public static RomanNumber Add(RomanNumber rn1, int rn2)
+        //{
+        //    //if (rn is null)
+        //    //{
+        //    //    throw new ArgumentNullException();
+        //    //}
+
+        //    RomanNumber rn = new();
+        //    rn.Value = rn1.Value + rn2;
+        //    return rn;
+        //}
+
+        //public static RomanNumber Add(RomanNumber rn1, String rn2)
+        //{
+        //    //if (rn is null)
+        //    //{
+        //    //    throw new ArgumentNullException();
+        //    //}
+
+        //    RomanNumber rn = new();
+        //    rn.Value = rn1.Value + RomanNumber.Parse(rn2);
+        //    return rn;
+        //}
+
+        //public static RomanNumber Add(String rn1, String rn2)
+        //{
+        //    //if (rn is null)
+        //    //{
+        //    //    throw new ArgumentNullException();
+        //    //}
+
+        //    RomanNumber rn = new();
+        //    rn.Value = RomanNumber.Parse(rn1) + RomanNumber.Parse(rn2);
+        //    return rn;
+        //}
+
+        //before refactoring
+
+        //public RomanNumber Add(RomanNumber rn)
+        //{
+        //    if (rn is null)
+        //    {
+        //        throw new ArgumentNullException();
+        //    }
+
+        //    RomanNumber r = new();
+        //    r.Value = rn.Value+ this.Value;
+        //    return r;
+        //}
+
+        //public RomanNumber Add(int rn)
+        //{
+        //    //if (rn is null)
+        //    //{
+        //    //    throw new ArgumentNullException();
+        //    //}
+
+        //    RomanNumber r = new();
+        //    r.Value = rn + this.Value;
+        //    return r;
+        //}
+
+        //public RomanNumber Add(String rn)
+        //{
+        //    //if (rn is null)
+        //    //{
+        //    //    throw new ArgumentNullException();
+        //    //}
+
+        //    RomanNumber r = new();
+        //    r.Value = RomanNumber.Parse(rn) + this.Value;
+        //    return r;
+        //}
+
+        //after refactoring
+        public RomanNumber Add(RomanNumber rn)
+        {
+            if (rn is null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            RomanNumber r = new();
+            r.Value = rn.Value + this.Value;
+            return r;
+        }
+
+        public RomanNumber Add(int rn)
+        {
+            //вместо дублирования -- делегируем
+
+            return this.Add(new RomanNumber(rn));
+        }
+
+        public RomanNumber Add(String rn)
+        {
+            return this.Add(new RomanNumber(Parse(rn)));
+        }
+
+        //public static RomanNumber Add(object rn1, object rn2)
+        //{
+        //    if (rn1 is null || rn2 is null)
+        //    {
+        //        throw new ArgumentNullException();
+        //    }
+
+        //    if (rn1 is int && rn2 is int) return new RomanNumber((int)rn1).Add((int)rn2);
+        //    else if (rn1 is String && rn2 is String) return new RomanNumber(RomanNumber.Parse((String)rn1)).Add((String)rn2);
+        //    else if (rn1 is int && rn2 is String) return new RomanNumber((int)rn1).Add((String)rn2);
+        //    else if (rn1 is String && rn2 is int) return new RomanNumber((int)rn2).Add((String)rn1);
+
+        //    return new RomanNumber();
+        //}
+
+
+        public static RomanNumber Add(int rn1, int rn2)
+        {
+            RomanNumber rn = new();
+            rn.Value = rn1 + rn2;
+            return rn;
+        }
+
+        public static RomanNumber Add(RomanNumber rn1, RomanNumber rn2)
+        {
+            return rn1.Add(rn2);
+        }
+
+        public static RomanNumber Add(RomanNumber rn1, int rn2)
+        {
+            return rn1.Add(rn2);
+        }
+
+        public static RomanNumber Add(RomanNumber rn1, String rn2)
+        {
+            return rn1.Add(rn2);
+        }
+
+        public static RomanNumber Add(String rn1, String rn2)
+        {
+
+            return RomanNumber.Add(RomanNumber.Parse(rn1), RomanNumber.Parse(rn2));
+        }
+
     }
 }
