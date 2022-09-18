@@ -79,10 +79,10 @@ namespace TestProject
             var exc3 = Assert.ThrowsException<ArgumentException>(() => { RomanNumber.Parse("MCMXCIф"); });
             var exc4 = Assert.ThrowsException<ArgumentException>(() => { RomanNumber.Parse("1"); });
 
-            var exp1 = new ArgumentException("Invalid char 1");
-            var exp2 = new ArgumentException("Invalid char H");
-            var exp3 = new ArgumentException("Invalid char ф");
-            var exp4 = new ArgumentException("Invalid char 1");
+            var exp1 = new ArgumentException(Calc.App.Resources.GetInvalidCharMessage('1'));
+            var exp2 = new ArgumentException(Calc.App.Resources.GetInvalidCharMessage('H'));
+            var exp3 = new ArgumentException(Calc.App.Resources.GetInvalidCharMessage('ф'));
+            var exp4 = new ArgumentException(Calc.App.Resources.GetInvalidCharMessage('1'));
 
             Assert.AreEqual(exp1.Message, exc1.Message);
             Assert.AreEqual(exp2.Message, exc2.Message);
@@ -90,7 +90,7 @@ namespace TestProject
             Assert.AreEqual(exp4.Message, exc4.Message);
 
             Assert.AreEqual(true,
-                Assert.ThrowsException<ArgumentException>(() => { RomanNumber.Parse("X X"); }).Message.StartsWith("Invalid char"));
+                Assert.ThrowsException<ArgumentException>(() => { RomanNumber.Parse("1X X1"); }).Message.StartsWith(Calc.App.Resources.GetInvalidCharMessage(' ').Substring(0, 7)));
             //Assert.IsTrue( Assert.ThrowsException<ArgumentException>(() => { RomanNumber.Parse("X X"); }).Message.StartsWith("Invalid char"))
         }
 
@@ -101,7 +101,7 @@ namespace TestProject
             // Будемо вимагати, щоб ще призводило до виключення
             // ArgumentException з повідомленням "Empty string not allowed"
             Assert.AreEqual(
-                "Empty string not allowed",
+                Calc.App.Resources.GetEmptyStringMessage(),
                 Assert.ThrowsException<ArgumentException>(
                     () => RomanNumber.Parse("")
                 ).Message
@@ -116,6 +116,7 @@ namespace TestProject
         public void RomanNumberNdigit()
         {
             Assert.AreEqual(0, RomanNumber.Parse("N"));// Daniel Test 
+            Assert.ThrowsException<ArgumentException>(() => { RomanNumber.Parse("XN"); });
         }
 
         [TestMethod]
@@ -309,6 +310,7 @@ namespace TestProject
         [TestMethod]
         public void AddStaticObjectTest()
         {
+            //тесты для фабричного метода с object параметрами
             object number1 = 2;
             object number2 = 3;
 
@@ -329,9 +331,72 @@ namespace TestProject
             Assert.AreEqual(10, rn10.Value);
             Assert.AreEqual(13, rn13.Value);
         }
+
+        [TestMethod]
+        public void SubtractionStaticObjectTest()
+        {
+            //тесты для фабричного метода с object параметрами
+            object number1 = 2;
+            object number2 = 3;
+
+            object str1 = "IX";
+            object str2 = "I";
+            object str3 = "IV";
+
+
+            RomanNumber rn5 = RomanNumber.Sub(number1, number2); //-1
+            RomanNumber rn8 = RomanNumber.Sub(rn5, number2); //  -4
+            RomanNumber rn10 = RomanNumber.Sub(str2, str1); // -8
+            RomanNumber rn9 = RomanNumber.Sub(rn5, str3); //  -5
+            RomanNumber rn13 = RomanNumber.Sub(rn5, rn8); // -3
+
+
+            Assert.AreEqual(-1, rn5.Value);
+            Assert.AreEqual(-4, rn8.Value);
+            Assert.AreEqual(-5, rn9.Value);
+            Assert.AreEqual(-8, rn10.Value);
+            Assert.AreEqual(3, rn13.Value);
+        }
+
+
+        [TestMethod]
+        public void MultStaticObjectTest()
+        {
+            //тесты для фабричного метода с object параметрами
+            object number1 = 2;
+            object number2 = 3;
+
+            object str1 = "IX";
+            object str2 = "I";
+            object str3 = "IV";
+
+
+            RomanNumber rn5 = RomanNumber.Mult(number1, number2); //  6
+            RomanNumber rn8 = RomanNumber.Mult(rn5, number2); //  18
+            RomanNumber rn10 = RomanNumber.Mult(str2, str1); // 9
+            RomanNumber rn9 = RomanNumber.Mult(rn5, str3); //  24
+            RomanNumber rn13 = RomanNumber.Mult(rn5, rn8); // -3
+
+
+            Assert.AreEqual(6, rn5.Value);
+            Assert.AreEqual(18, rn8.Value);
+            Assert.AreEqual(24, rn9.Value);
+            Assert.AreEqual(9, rn10.Value);
+            Assert.AreEqual(108, rn13.Value);
+        }
+
+
+
+        [TestMethod]
+        public void EvalTest()
+        {
+
+            Assert.IsNotNull(CalcEnginee.EvalExpression("XI + IV"));
+            //Assert.AreEqual(new RomanNumber(10), CalcEnginee.EvalExpression("XI - I"));
+            Assert.ThrowsException<ArgumentException>(() => CalcEnginee.EvalExpression("2 + 3"));
+        }
+
     }
-
-
 
 }
 
